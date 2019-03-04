@@ -44,7 +44,7 @@ void PlayGame()
 		FText Guess = GetValidGuess(); 
 
 		// submit valid guess to the game
-		FBullCowCount BullCowCount = BCGame.SubmitGuess(Guess);
+		FBullCowCount BullCowCount = BCGame.SubmitValidGuess(Guess);
 
 		// print number of Bulls & Cows
 		std::cout << "Bulls = " << BullCowCount.Bulls;
@@ -75,13 +75,14 @@ void PrintInfo()
 FText GetValidGuess()
 {
 	EGuessStatus Status = EGuessStatus::Invalid;
+	FText Guess = "";
 	do
 	{
 		int32 CurrentTry = BCGame.GetCurrentTry();
 
 		// get a guess from the player
 		std::cout << "Try " << CurrentTry << ". Enter your guess: ";
-		FText Guess = "";
+		
 		getline(std::cin, Guess);
 		EGuessStatus Status = BCGame.CheckGuessValidity(Guess);
 		switch (Status)
@@ -96,8 +97,10 @@ FText GetValidGuess()
 			std::cout << "Please enter an Isogram.\n";
 			break;
 		default:
-			return Guess;
+			// assume valid guess
+			break;
 		}
 	}
-	while (Status == EGuessStatus::OK);
+	while (Status != EGuessStatus::OK); // keep looping till we get no errors
+	return Guess;
 }
